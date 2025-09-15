@@ -1,7 +1,7 @@
 # Lamine-yala
 
 
-# Project Title
+# โปรแกรม
 
 A brief description of what this project does and who it's for
 
