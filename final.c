@@ -113,12 +113,6 @@ void Add()
     printf("ต้องการเพิ่มข้อมูลต่อหรือไม่ (y/n): ");
 
     scanf(" %c", &Con);
-    while (Con != 'y' || Con != 'Y' || Con != 'n' || Con != 'N')
-    {
-        printf("(y/n)?: ");
-        scanf(" %c", &Con);
-    }
-    
     printf("");
     if (Con == 'y' || Con == 'Y'){
         Add();
