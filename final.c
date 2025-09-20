@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 
 int menu();
 void Load();
@@ -19,8 +20,8 @@ char SubscriptionDate[100][12];
 int record = 0;
 
 int main()
-{   
-    // Load();
+{
+    Load();
     while (1)
     {
         int ch = menu();
@@ -48,7 +49,7 @@ int main()
                 break;
 
             case 6:
-                // Save();
+                Save();
                 break;
             
             default:
@@ -64,7 +65,7 @@ int main()
     return 0;
 }
 
-void load()
+void Load()
 {
     FILE *file = fopen("subscription.csv", "r");
     if (file == NULL) {
@@ -73,9 +74,37 @@ void load()
     }
     
     char line[100];
-    while (fgets(line, sizeof(line), file) != NULL) {
-        printf("%s", line);
+    char *token;
+    fgets(line, sizeof(line), file);
+
+    while (fgets(line, sizeof(line), file) != NULL && record < 100) {
+        
+        token = strtok(line, ",");
+        if (token != NULL) {
+            strcpy(SubscriberName[record], token);
+        }
+
+        token = strtok(NULL,",");
+        if (token != NULL) {
+            strcpy(Email[record], token);
+        }
+
+        token = strtok(NULL,",");
+        if (token != NULL) {
+            strcpy(JournalName[record], token);
+        }
+
+        token = strtok(NULL, "\n");
+        if (token != NULL) {
+            strcpy(SubscriptionDate[record], token);
+        }
+
+        record++;        
     }
+
+    fclose(file);
+
+    printf("โหลดข้อมูลสำเร็จ!!\n");
     
 }
 
@@ -133,12 +162,19 @@ void Save()
 
     fprintf(file, "SubscriberName, Email, JournalName, SubscriptionDate\n");
 
+    for (int i = 0; i < record; i++) {
+        fprintf(file, "%s,%s,%s,%s\n", SubscriberName[i], Email[i], JournalName[i], SubscriptionDate[i]);
+    }
+
+    fclose(file);
+
+    printf("บันทึกสำเร็จ!!\n");
 
 }
 
 void check()
 {
     for (int i = 0; i < record; i++) {
-        printf("%s %s %s %s\n", SubscriberName[i], Email[i], JournalName[i], SubscriberName[i]);
+        printf("%s %s %s %s\n", SubscriberName[i], Email[i], JournalName[i], SubscriptionDate[i]);
     }
 }
