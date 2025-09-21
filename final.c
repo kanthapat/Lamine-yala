@@ -37,7 +37,7 @@ int main()
                 break;
             
             case 3:
-                // Search();
+                Search();
                 break;
             
             case 4:
@@ -176,5 +176,24 @@ void check()
 {
     for (int i = 0; i < record; i++) {
         printf("%s %s %s %s\n", SubscriberName[i], Email[i], JournalName[i], SubscriptionDate[i]);
+    }
+}
+
+void Search()
+{
+    char name[50];
+    int foundCount = 0;
+    printf("กรอกชื่อที่ต้องการหา ");
+    scanf(" %[^\n]", &name);
+
+    for(int i = 0; i < record; i++) {
+        char *found = strstr(name, SubscriberName[i]);
+        if (found != NULL) {
+            printf("%s %s %s %s\n", SubscriberName[i], Email[i], JournalName[i], SubscriptionDate[i]);
+            foundCount++;
+        }
+    }
+    if (foundCount == 0) {
+        printf("ไม่พบข้อมูล\n");
     }
 }
