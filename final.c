@@ -26,35 +26,36 @@ int main()
     {
         int ch = menu();
 
-        switch (ch) {
-            case 1:
-                // Read();
-                check();
-                break;
-            
-            case 2:
-                Add();
-                break;
-            
-            case 3:
-                Search();
-                break;
-            
-            case 4:
-                // Update();
-                break;
-            
-            case 5:
-                // Delete();
-                break;
+        switch (ch)
+        {
+        case 1:
+            // Read();
+            check();
+            break;
 
-            case 6:
-                Save();
-                break;
-            
-            default:
-                printf("กรอกมั่วลั่วนะ\n");
-                break;
+        case 2:
+            Add();
+            break;
+
+        case 3:
+            Search();
+            break;
+
+        case 4:
+            // Update();
+            break;
+
+        case 5:
+            // Delete();
+            break;
+
+        case 6:
+            Save();
+            break;
+
+        default:
+            printf("กรอกมั่วลั่วนะ\n");
+            break;
         }
         if (ch == 6)
         {
@@ -68,44 +69,49 @@ int main()
 void Load()
 {
     FILE *file = fopen("subscription.csv", "r");
-    if (file == NULL) {
+    if (file == NULL)
+    {
         printf("ไม่พบไฟล์\n");
         return;
     }
-    
+
     char line[100];
     char *token;
     fgets(line, sizeof(line), file);
 
-    while (fgets(line, sizeof(line), file) != NULL && record < 100) {
-        
+    while (fgets(line, sizeof(line), file) != NULL && record < 100)
+    {
+
         token = strtok(line, ",");
-        if (token != NULL) {
+        if (token != NULL)
+        {
             strcpy(SubscriberName[record], token);
         }
 
-        token = strtok(NULL,",");
-        if (token != NULL) {
+        token = strtok(NULL, ",");
+        if (token != NULL)
+        {
             strcpy(Email[record], token);
         }
 
-        token = strtok(NULL,",");
-        if (token != NULL) {
+        token = strtok(NULL, ",");
+        if (token != NULL)
+        {
             strcpy(JournalName[record], token);
         }
 
         token = strtok(NULL, "\n");
-        if (token != NULL) {
+        if (token != NULL)
+        {
             strcpy(SubscriptionDate[record], token);
         }
 
-        record++;        
+        record++;
     }
 
     fclose(file);
 
     printf("โหลดข้อมูลสำเร็จ!!\n");
-    
 }
 
 int menu()
@@ -143,11 +149,10 @@ void Add()
 
     scanf(" %c", &Con);
     printf("");
-    if (Con == 'y' || Con == 'Y'){
+    if (Con == 'y' || Con == 'Y')
+    {
         Add();
     }
-    
-
 }
 
 void Save()
@@ -162,38 +167,70 @@ void Save()
 
     fprintf(file, "SubscriberName, Email, JournalName, SubscriptionDate\n");
 
-    for (int i = 0; i < record; i++) {
+    for (int i = 0; i < record; i++)
+    {
         fprintf(file, "%s,%s,%s,%s\n", SubscriberName[i], Email[i], JournalName[i], SubscriptionDate[i]);
     }
 
     fclose(file);
 
     printf("บันทึกสำเร็จ!!\n");
-
 }
 
 void check()
 {
-    for (int i = 0; i < record; i++) {
+    for (int i = 0; i < record; i++)
+    {
         printf("%s %s %s %s\n", SubscriberName[i], Email[i], JournalName[i], SubscriptionDate[i]);
     }
 }
 
 void Search()
 {
-    char name[50];
+    int choose = 0;
     int foundCount = 0;
-    printf("กรอกชื่อที่ต้องการหา ");
-    scanf(" %[^\n]", &name);
+    printf("----- ค้นหาข้อมูล -----\n");
+    printf("ต้องการค้นหาแบบไหน\n 1.ชื่อสมาชิก\n 2.ชื่อวารสาร\n");
+    while (choose != 1 && choose != 2)
+    {
+        printf("กรอกตัวเลือก (1,2): ");
+        scanf("%d", &choose);
+    }
 
-    for(int i = 0; i < record; i++) {
-        char *found = strstr(name, SubscriberName[i]);
-        if (found != NULL) {
-            printf("%s %s %s %s\n", SubscriberName[i], Email[i], JournalName[i], SubscriptionDate[i]);
-            foundCount++;
+    if (choose == 1)
+    {
+        char name[50];
+        printf("กรอกชื่อที่ต้องการหา ");
+        scanf(" %[^\n]", &name);
+
+        for (int i = 0; i < record; i++)
+        {
+            char *foundName = strstr(name, SubscriberName[i]);
+            if (foundName != NULL)
+            {
+                printf("%s %s %s %s\n", SubscriberName[i], Email[i], JournalName[i], SubscriptionDate[i]);
+                foundCount++;
+            }
         }
     }
-    if (foundCount == 0) {
+    else
+    {
+        char Journal[50];
+        printf("กรอกชื่อวารสารที่ต้องการค้นหา: ");
+        scanf(" %[^\n]", &Journal);
+
+        for (int j = 0; j < record; j++) {
+            char *foundJournal = strstr(Journal, JournalName[j]);
+
+            if (foundJournal != NULL) {
+                printf("%s %s %s %s\n", SubscriberName[j], Email[j], JournalName[j], SubscriptionDate[j]);
+                foundCount++;
+            }
+        }
+    }
+
+    if (foundCount == 0)
+    {
         printf("ไม่พบข้อมูล\n");
     }
 }
