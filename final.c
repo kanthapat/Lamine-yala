@@ -7,7 +7,7 @@ void Save();
 void Read();
 void Search();
 void Add();
-void Update();
+void Update(int rec);
 void Delete();
 
 void check();
@@ -21,6 +21,8 @@ int record = 0;
 
 int main()
 {
+    char edit[50];
+    int choice = 0;
     Load();
     while (1)
     {
@@ -42,7 +44,37 @@ int main()
             break;
 
         case 4:
-            // Update();
+            printf("----- อัพเดทข้อมูล -----\n");
+            printf("กรอกชื่อที่ต้องการแก้ไขข้อมูล: ");
+            scanf(" %[^\n]", edit);
+
+            int foundFlag = 0;
+            
+            for (int i = 0; i < record; i++)
+            {
+                char *found = strstr(SubscriberName[i], edit);
+                if (found != NULL)
+                {
+                    char check;
+                    printf("%s %s\n", SubscriberName[i], Email[i]);
+                    do
+                    {
+                        printf("ข้อมูลถูกต้องหรือไม่ (y/n): ");
+                        scanf(" %c", &check);
+                    } while (check != 'y' && check != 'Y' && check != 'n' && check != 'N');
+                    
+                    if (check == 'y' || check == 'Y') {
+                        Update(i);
+                        foundFlag = 1;
+                        break;
+                    }         
+                }
+            }
+
+            if (!foundFlag)
+            {
+                printf("ไม่พบชื่อ '%s'\n", edit);
+            }
             break;
 
         case 5:
@@ -62,7 +94,6 @@ int main()
             break;
         }
     }
-
     return 0;
 }
 
@@ -219,10 +250,12 @@ void Search()
         printf("กรอกชื่อวารสารที่ต้องการค้นหา: ");
         scanf(" %[^\n]", &Journal);
 
-        for (int j = 0; j < record; j++) {
+        for (int j = 0; j < record; j++)
+        {
             char *foundJournal = strstr(Journal, JournalName[j]);
 
-            if (foundJournal != NULL) {
+            if (foundJournal != NULL)
+            {
                 printf("%s %s %s %s\n", SubscriberName[j], Email[j], JournalName[j], SubscriptionDate[j]);
                 foundCount++;
             }
@@ -232,5 +265,49 @@ void Search()
     if (foundCount == 0)
     {
         printf("ไม่พบข้อมูล\n");
+    }
+}
+
+void Update(int rec)
+{
+    int choice = 0;
+
+    printf("ต้องการแก้ไขข้อมูลอะไร?\n1.ชื่อ\n2.อีเมล์\n3.ชื่อวารสาร\n4.วันที่สมัครสมาชิก\n");
+    printf("กรอกตัวเลข (1-4): ");
+    scanf("%d", &choice);
+
+    while (choice < 1 && choice > 4)
+    {
+        printf("กรอกมั่ว!!\n");
+        printf("ต้องการแก้ไขข้อมูลอะไร?\n1.ชื่อ\n2.อีเมล์\n3.ชื่อวารสาร\n4.วันที่สมัครสมาชิก\n");
+        printf("กรอกตัวเลข (1-4): ");
+        scanf("%d", &choice);
+    }
+
+    switch (choice)
+    {
+    case 1:
+        printf("กรอกชื่อใหม่: ");
+        scanf(" %[^\n]", &SubscriberName[rec]);
+        printf("แก้ไขสำเร็จ!!\n");
+        break;
+    case 2:
+        printf("กรอกอีเมล์ใหม่: ");
+        scanf(" %[^\n]", &Email[rec]);
+        printf("แก้ไขสำเร็จ!!\n");
+        break;
+    case 3:
+        printf("กรอกชื่อวารสารใหม่: ");
+        scanf(" %[^\n]", &JournalName[rec]);
+        printf("แก้ไขสำเร็จ!!\n");
+        break;
+    case 4:
+        printf("กรอกวันที่ใหม่: ");
+        scanf(" %[^\n]", &SubscriptionDate[rec]);
+        printf("แก้ไขสำเร็จ!!\n");
+        break;
+    default:
+        printf("มั่ว!!");
+        break;
     }
 }
