@@ -1,14 +1,24 @@
 #include <stdio.h>
 #include <string.h>
+#include <assert.h>
+
+#define RED     "\x1b[31m"
+#define GREEN   "\x1b[32m"
+#define BLUE    "\x1b[34m"
+#define YELLOW  "\x1b[33m"
+#define RESET   "\x1b[0m"
 
 int menu();
-void Load();
-void Save();
+void Load(const char *filename);
+void Save(const char *filename);
 void Read();
 void Search();
 void Add();
 void Update(int rec);
 void Delete();
+
+void runUnitTests();
+void runIntegrationTests();
 
 char SubscriberName[100][50];
 char Email[100][50];
@@ -19,13 +29,28 @@ int record = 0;
 
 int main()
 {
-    char edit[50];
-    int choice = 0;
-    Load();
+    int mode; 
+    printf("===== ระบบจัดการข้อมูลการสมัครสมาชิก =====\n"); 
+    printf("1. โหมดใช้งานปกติ\n"); 
+    printf("2. โหมดทดสอบระบบ (Unit + Integration Test)\n"); 
+    printf("เลือกโหมด (1-2): "); 
+    scanf("%d", &mode); 
+    if (mode == 2) { 
+        runUnitTests(); 
+        runIntegrationTests(); 
+        printf(BLUE"\n✅ การทดสอบทั้งหมดเสร็จสิ้น!\n"RESET); 
+        return 0; 
+    }
 
-    while (1)
+    char edit[50];
+    const char *main_file = "subscription.csv";
+    int choice = 0;
+    Load(main_file);
+    int ch;
+
+    do
     {
-        int ch = menu();
+        ch = menu();
 
         switch (ch)
         {
@@ -82,24 +107,21 @@ int main()
             break;
 
         case 6:
-            Save();
+            Save(main_file);
             break;
 
         default:
             printf("กรอกมั่วลั่วนะ\n");
             break;
         }
-        if (ch == 6)
-        {
-            break;
-        }
-    }
+    } while (ch != 6);
+    
     return 0;
 }
 
-void Load()
+void Load(const char *filename)
 {
-    FILE *file = fopen("subscription.csv", "r");
+    FILE *file = fopen(filename, "r");
     if (file == NULL)
     {
         printf("ไม่พบไฟล์\n");
@@ -186,9 +208,9 @@ void Add()
     }
 }
 
-void Save()
+void Save(const char *filename)
 {
-    FILE *file = fopen("subscription.csv", "w");
+    FILE *file = fopen(filename, "w");
 
     if (file == NULL)
     {
@@ -378,4 +400,118 @@ void Delete()
     {
         printf("ไม่พบชื่อ '%s'\n", del);
     }
+}
+
+void DeleteTest(const char *del)
+{
+    int foundcount = 0;
+    for (int i = 0; i < record; i++)
+    {
+        if (strstr(SubscriberName[i], del))
+        {
+            for (int j = i; j < record - 1; j++)
+            {
+                strcpy(SubscriberName[j], SubscriberName[j + 1]);
+                strcpy(Email[j], Email[j + 1]);
+                strcpy(JournalName[j], JournalName[j + 1]);
+                strcpy(SubscriptionDate[j], SubscriptionDate[j + 1]);
+            }
+            record--;
+            foundcount = 1;
+            break;
+        }
+    }
+    assert(foundcount == 1);  // ทดสอบว่าเจอและลบได้
+}
+
+void runUnitTests()
+{
+    printf(YELLOW"\n===== 🔍 เริ่มการทดสอบ Unit Test =====\n"RESET);
+
+    // จำลองข้อมูล
+    record = 0;
+    strcpy(SubscriberName[0], "Alice");
+    strcpy(Email[0], "alice@mail.com");
+    strcpy(JournalName[0], "Nature");
+    strcpy(SubscriptionDate[0], "2024-10-01");
+    record++;
+    printf("Test Data 1: %s, %s, %s, %s\n", SubscriberName[0], Email[0], JournalName[0], SubscriptionDate[0]);
+
+    // Test 1: เพิ่มข้อมูล
+    strcpy(SubscriberName[record], "Bob");
+    strcpy(Email[record], "bob@mail.com");
+    strcpy(JournalName[record], "Science");
+    strcpy(SubscriptionDate[record], "2024-11-01");
+    record++;
+    printf("Test 1: เพิ่มข้อมูล %s\n", SubscriberName[1]);
+    if (strcmp(SubscriberName[1], "Bob") == 0){
+        printf(GREEN"✅ Test 1 ผ่าน\n"RESET);
+    } else {
+        printf(RED"❌ Test 1 ล้มเหลว\n"RESET);
+    }
+    Read();
+
+    // Test 2: ลบข้อมูล
+    printf("Test 2: ลบข้อมูล Alice\n");
+    DeleteTest("Alice");  // ฟังก์ชันทดสอบลบข้อมูลเฉพาะ test
+    if (record == 1 && strcmp(SubscriberName[0], "Bob") == 0){
+        printf(GREEN"✅ Test 2 ผ่าน\n"RESET);
+    } else {
+        printf(RED"❌ Test 2 ล้มเหลว\n"RESET);
+    }
+
+    Read();
+    printf(GREEN"✅ Unit Tests เสร็จสิ้น\n"RESET);
+}
+
+// -------------------------
+void runIntegrationTests()
+{
+    const char *test_file = "test_subscriptions.csv";
+
+    // แสดง Scenario คร่าว ๆ ก่อนเริ่ม
+    printf(YELLOW "\n===== 🧩 Integration Test Scenario =====\n" RESET);
+    printf(BLUE "Scenario:\n" RESET);
+    printf("1️⃣  เตรียมข้อมูลสมาชิกใหม่ (Charlie)\n");
+    printf("2️⃣  บันทึกข้อมูลลงไฟล์ test_subscriptions.csv\n");
+    printf("3️⃣  ล้างข้อมูลใน memory และโหลดจากไฟล์\n");
+    printf("4️⃣  ตรวจสอบข้อมูลที่โหลดว่าถูกต้องหรือไม่\n");
+    printf("5️⃣  แสดงข้อมูลทั้งหมด\n");
+
+    printf(YELLOW "เริ่มการทดสอบ...\n" RESET);
+
+    // --- Step 0: เตรียมข้อมูลจำลอง ---
+    record = 0;
+    strcpy(SubscriberName[0], "Charlie");
+    strcpy(Email[0], "charlie@mail.com");
+    strcpy(JournalName[0], "Tech");
+    strcpy(SubscriptionDate[0], "2024-09-01");
+    record++;
+    printf(BLUE "Step 1: เตรียมข้อมูลจำลอง\n" RESET);
+    printf("Test Data: %s, %s, %s, %s\n", SubscriberName[0], Email[0], JournalName[0], SubscriptionDate[0]);
+
+    // --- Step 1: Save ---
+    printf(BLUE "\nStep 2: Save ข้อมูลลงไฟล์ %s\n" RESET, test_file);
+    Save(test_file);
+    printf(GREEN "✅ Save สำเร็จ\n" RESET);
+
+    // --- Step 2: Load ---
+    record = 0;
+    printf(BLUE "\nStep 3: Load ข้อมูลจากไฟล์ %s\n" RESET, test_file);
+    Load(test_file);
+    printf(GREEN "✅ Load สำเร็จ\n" RESET);
+
+    // --- Step 3: ตรวจสอบข้อมูล ---
+    printf(BLUE "\nStep 4: ตรวจสอบข้อมูลที่โหลด\n" RESET);
+    printf("Loaded Data: %s, %s, %s, %s\n", SubscriberName[0], Email[0], JournalName[0], SubscriptionDate[0]);
+    if (strcmp(SubscriberName[0], "Charlie") == 0 && strcmp(Email[0], "charlie@mail.com") == 0)
+        printf(GREEN "✅ Integration Test ผ่าน\n" RESET);
+    else
+        printf(RED "❌ Integration Test ล้มเหลว\n" RESET);
+
+    // --- Step 4: แสดงข้อมูลทั้งหมด ---
+    printf(BLUE "\nStep 4: แสดงข้อมูลทั้งหมด\n" RESET);
+    Read();
+
+    printf(GREEN "\n✅ Integration Tests เสร็จสิ้น\n" RESET);
 }
