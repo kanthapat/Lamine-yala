@@ -193,7 +193,7 @@ void Add()
     scanf(" %[^\n]", &Email[record]);
     printf("Journal Name: ");
     scanf(" %[^\n]", &JournalName[record]);
-    printf("Subscription Date: ");
+    printf("Subscription Date (yyyy-mm-dd): ");
     scanf(" %[^\n]", &SubscriptionDate[record]);
 
     record++;
