@@ -10,8 +10,6 @@ void Add();
 void Update(int rec);
 void Delete();
 
-void check();
-
 char SubscriberName[100][50];
 char Email[100][50];
 char JournalName[100][20];
@@ -24,6 +22,7 @@ int main()
     char edit[50];
     int choice = 0;
     Load();
+
     while (1)
     {
         int ch = menu();
@@ -31,8 +30,7 @@ int main()
         switch (ch)
         {
         case 1:
-            // Read();
-            check();
+            Read();
             break;
 
         case 2:
@@ -44,12 +42,13 @@ int main()
             break;
 
         case 4:
+            
             printf("----- อัพเดทข้อมูล -----\n");
             printf("กรอกชื่อที่ต้องการแก้ไขข้อมูล: ");
             scanf(" %[^\n]", edit);
 
             int foundFlag = 0;
-            
+
             for (int i = 0; i < record; i++)
             {
                 char *found = strstr(SubscriberName[i], edit);
@@ -62,12 +61,13 @@ int main()
                         printf("ข้อมูลถูกต้องหรือไม่ (y/n): ");
                         scanf(" %c", &check);
                     } while (check != 'y' && check != 'Y' && check != 'n' && check != 'N');
-                    
-                    if (check == 'y' || check == 'Y') {
+
+                    if (check == 'y' || check == 'Y')
+                    {
                         Update(i);
                         foundFlag = 1;
                         break;
-                    }         
+                    }
                 }
             }
 
@@ -78,7 +78,7 @@ int main()
             break;
 
         case 5:
-            // Delete();
+            Delete();
             break;
 
         case 6:
@@ -149,7 +149,7 @@ int menu()
 {
     int choice = 0;
     printf("-------- ระบบจัดการข้อมูลการสมัครสมาชิก --------\n");
-    printf("1.อ่านข้อมูล\n");
+    printf("1.แสดงข้อมูล\n");
     printf("2.เพิ่มข้อมูล\n");
     printf("3.ค้นหาข้อมูล\n");
     printf("4.อัพเดทข้อมูล\n");
@@ -208,12 +208,22 @@ void Save()
     printf("บันทึกสำเร็จ!!\n");
 }
 
-void check()
+void Read()
 {
+    printf("----------------------------------------------------------------------------------------------------------\n");
+    printf("| %-20s | %-30s | %-25s | %-18s |\n", "SubscriberName", "Email", "JournalName", "SubscriptionDate");
+    printf("----------------------------------------------------------------------------------------------------------\n");
+
     for (int i = 0; i < record; i++)
     {
-        printf("%s %s %s %s\n", SubscriberName[i], Email[i], JournalName[i], SubscriptionDate[i]);
+        printf("| %-20s | %-30s | %-25s | %-18s |\n", 
+               SubscriberName[i], 
+               Email[i], 
+               JournalName[i], 
+               SubscriptionDate[i]);
     }
+
+    printf("----------------------------------------------------------------------------------------------------------\n");
 }
 
 void Search()
@@ -270,6 +280,7 @@ void Search()
 
 void Update(int rec)
 {
+    char Con;
     int choice = 0;
 
     printf("ต้องการแก้ไขข้อมูลอะไร?\n1.ชื่อ\n2.อีเมล์\n3.ชื่อวารสาร\n4.วันที่สมัครสมาชิก\n");
@@ -307,7 +318,64 @@ void Update(int rec)
         printf("แก้ไขสำเร็จ!!\n");
         break;
     default:
-        printf("มั่ว!!");
+        printf("มั่ว!!\n");
         break;
+    }
+    printf("ต้องการแก้ไขข้อมูลต่อหรือไม่ (y/n): ");
+
+    scanf(" %c", &Con);
+    printf("");
+    if (Con == 'y' || Con == 'Y')
+    {
+        Update(rec);
+    } else if (Con == 'n' || 'N') {
+        printf("กำลังกลับสู่หน้าหลัก...\n");
+    } else {
+        printf("กรอกผิด\n");
+        printf("กลับสู่หน้าหลัก...\n");
+    }
+}
+
+void Delete()
+{
+    char del[50];
+    printf("----- ลบข้อมูล -----\n");
+    printf("กรอกชื่อที่ต้องการลบข้อมูล: ");
+    scanf(" %[^\n]", del);
+
+    int foundcount = 0;
+
+    for (int i = 0; i < record; i++)
+    {
+        char *f = strstr(SubscriberName[i], del);
+        if (f != NULL)
+        {
+            char che;
+            printf("%s %s\n", SubscriberName[i], Email[i]);
+            do
+            {
+                printf("ข้อมูลถูกต้องหรือไม่ (y/n): ");
+                scanf(" %c", &che);
+            } while (che != 'y' && che != 'Y' && che != 'n' && che != 'N');
+
+            if (che == 'y' || che == 'Y')
+            {
+                for(int j = i; j < record - 1; j++) {
+                    strcpy(SubscriberName[j], SubscriberName[j+1]);
+                    strcpy(Email[j], Email[j+1]);
+                    strcpy(JournalName[j], JournalName[j+1]);
+                    strcpy(SubscriptionDate[j], SubscriptionDate[j+1]);                   
+                }
+                record--;
+                printf("ลบข้อมูลเรียบร้อย!\n");
+                foundcount = 1;
+                break;
+            }
+        }
+    }
+
+    if (!foundcount)
+    {
+        printf("ไม่พบชื่อ '%s'\n", del);
     }
 }
