@@ -80,7 +80,15 @@ int main()
                 if (found != NULL)
                 {
                     char check;
-                    printf("%s %s\n", SubscriberName[i], Email[i]);
+                    printf("----------------------------------------------------------------------------------------------------------\n");
+                    printf("----------------------------------------------------------------------------------------------------------\n");
+                    printf("| %-20s | %-30s | %-25s | %-18s |\n", "SubscriberName", "Email", "JournalName", "SubscriptionDate");
+                    printf("| %-20s | %-30s | %-25s | %-18s |\n", 
+                        SubscriberName[i], 
+                        Email[i], 
+                        JournalName[i], 
+                        SubscriptionDate[i]);
+                    printf("----------------------------------------------------------------------------------------------------------\n");
                     do
                     {
                         printf("ข้อมูลถูกต้องหรือไม่ (y/n): ");
@@ -271,7 +279,15 @@ void Search()
             char *foundName = strstr(name, SubscriberName[i]);
             if (foundName != NULL)
             {
-                printf("%s %s %s %s\n", SubscriberName[i], Email[i], JournalName[i], SubscriptionDate[i]);
+                printf("----------------------------------------------------------------------------------------------------------\n");
+                printf("| %-20s | %-30s | %-25s | %-18s |\n", "SubscriberName", "Email", "JournalName", "SubscriptionDate");
+                printf("----------------------------------------------------------------------------------------------------------\n");
+                printf("| %-20s | %-30s | %-25s | %-18s |\n", 
+                    SubscriberName[i], 
+                    Email[i], 
+                    JournalName[i], 
+                    SubscriptionDate[i]);
+                printf("----------------------------------------------------------------------------------------------------------\n");
                 foundCount++;
             }
         }
@@ -288,7 +304,15 @@ void Search()
 
             if (foundJournal != NULL)
             {
-                printf("%s %s %s %s\n", SubscriberName[j], Email[j], JournalName[j], SubscriptionDate[j]);
+                printf("----------------------------------------------------------------------------------------------------------\n");
+                printf("| %-20s | %-30s | %-25s | %-18s |\n", "SubscriberName", "Email", "JournalName", "SubscriptionDate");
+                printf("----------------------------------------------------------------------------------------------------------\n");
+                printf("| %-20s | %-30s | %-25s | %-18s |\n", 
+                    SubscriberName[j], 
+                    Email[j], 
+                    JournalName[j], 
+                    SubscriptionDate[j]);
+                printf("----------------------------------------------------------------------------------------------------------\n");
                 foundCount++;
             }
         }
@@ -335,7 +359,7 @@ void Update(int rec)
         printf("แก้ไขสำเร็จ!!\n");
         break;
     case 4:
-        printf("กรอกวันที่ใหม่: ");
+        printf("กรอกวันที่ใหม่ (yyyy-mm-dd): ");
         scanf(" %[^\n]", &SubscriptionDate[rec]);
         printf("แก้ไขสำเร็จ!!\n");
         break;
@@ -373,7 +397,15 @@ void Delete()
         if (f != NULL)
         {
             char che;
-            printf("%s %s\n", SubscriberName[i], Email[i]);
+            printf("----------------------------------------------------------------------------------------------------------\n");
+            printf("----------------------------------------------------------------------------------------------------------\n");
+            printf("| %-20s | %-30s | %-25s | %-18s |\n", "SubscriberName", "Email", "JournalName", "SubscriptionDate");
+            printf("| %-20s | %-30s | %-25s | %-18s |\n", 
+                SubscriberName[i], 
+                Email[i], 
+                JournalName[i], 
+                SubscriptionDate[i]);
+            printf("----------------------------------------------------------------------------------------------------------\n");
             do
             {
                 printf("ข้อมูลถูกต้องหรือไม่ (y/n): ");
