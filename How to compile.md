@@ -123,17 +123,13 @@ gcc  final.c  -o  final
 ### 💠 Windows
 
 ```
-
 .\final.exe
-
 ```
 
 ### 💠 macOS / Linux
 
 ```
-
 ./final
-
 ```
 
 ---
